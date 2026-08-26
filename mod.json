@@ -1,0 +1,29 @@
+{
+	"geode": "5.9.0",
+	"gd": {
+		"win": "2.2081"
+	},
+	"id": "sho8814.rmb-player2-click",
+	"name": "RMB P2 Click",
+	"version": "v1.0.1",
+	"developer": "SHO8814",
+	"description": "Simple mini mod for Player2 click input using Right Mouse Button. Only for Windows.",
+	"tags": [
+		"interface",
+		"gameplay",
+		"enhancement",
+		"utility"
+	],
+	"links": {
+		"source": "https://github.com/SHO8814/rmb-p2-click"
+	},
+	"dependencies": {
+		"geode.node-ids": ">=v1.23.3"
+	},
+	"resources": {
+		"sprites": [
+			"resources/rmbButtonOn.png",
+			"resources/rmbButtonOff.png"
+		]
+	}
+}
