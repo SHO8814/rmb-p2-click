@@ -2,6 +2,8 @@
 #include <Geode/modify/GJBaseGameLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/EditorPauseLayer.hpp>
+#include <Geode/modify/EditLevelLayer.hpp>
+#include <Geode/modify/LevelInfoLayer.hpp>
 
 using namespace geode::prelude;
 
@@ -71,13 +73,19 @@ class $modify(RMBPauseLayer, PauseLayer) {
     void customSetup() {
         PauseLayer::customSetup();
 
-        auto gameMenu = this->getChildByID("right-button-menu");
+        auto mainLayer = this->getChildByID("main-layer");
+
+        if (!mainLayer) {
+            return;
+        }
+
+        auto gameMenu = mainLayer->getChildByID("left-button-menu");
 
         if (!gameMenu) {
             return;
         }
 
-        auto rmbToggle = createRmbToggle(this, menu_selector(RMBPauseLayer::onRmbToggle), 0.69f); // button size
+        auto rmbToggle = createRmbToggle(this, menu_selector(RMBPauseLayer::onRmbToggle), 0.59f); // button size
 
         rmbToggle->setID("rmb-player2-toggle"_spr);
         rmbToggle->toggle(rmbPlayer2Enabled());
@@ -122,6 +130,73 @@ class $modify(RMBEditorPauseLayer, EditorPauseLayer) {
     }
 
     void onRmbToggle(CCObject* sender) {
+        auto rmbToggle = static_cast<CCMenuItemToggler*>(sender);
+
+        bool isEnabled = !rmbToggle->isToggled();
+
+        Mod::get()->setSavedValue<bool>("rmb-enabled", isEnabled);
+    }
+};
+
+// Toggle Button in Level Upload / Edit Menu
+class $modify(RMBEditLevelLayer, EditLevelLayer) {
+    bool init(GJGameLevel * level) {
+        if (!EditLevelLayer::init(level)) {
+            return false;
+        }
+
+        auto menu = this->getChildByID("level-actions-menu");
+
+        if (!menu) {
+            return true;
+        }
+
+        auto rmbToggle = createRmbToggle(this, menu_selector(RMBEditLevelLayer::onRmbToggle), 0.61f); // button size
+
+        rmbToggle->setID("rmb-player2-toggle"_spr);
+        rmbToggle->toggle(rmbPlayer2Enabled());
+
+        menu->addChild(rmbToggle);
+        menu->updateLayout();
+
+        return true;
+    }
+
+    void onRmbToggle(CCObject * sender) {
+        auto rmbToggle = static_cast<CCMenuItemToggler*>(sender);
+
+        bool isEnabled = !rmbToggle->isToggled();
+
+        Mod::get()->setSavedValue<bool>("rmb-enabled", isEnabled);
+    }
+};
+
+// Toggle Button in Level Info Menu
+class $modify(RMBLevelInfoLayer, LevelInfoLayer) {
+    bool init(GJGameLevel * level, bool isPlatformer) {
+        if (!LevelInfoLayer::init(level, isPlatformer)) {
+            return false;
+        }
+
+        auto menu = this->getChildByID("settings-menu");
+
+        if (!menu) {
+            return true;
+        }
+
+		auto rmbToggle = createRmbToggle(this, menu_selector(RMBLevelInfoLayer::onRmbToggle), 0.67f); // button size
+
+        rmbToggle->setID("rmb-player2-toggle"_spr);
+        rmbToggle->toggle(rmbPlayer2Enabled());
+
+        rmbToggle->setPosition({ 0.f, 73.f });
+
+        menu->addChild(rmbToggle);
+
+        return true;
+    }
+
+    void onRmbToggle(CCObject * sender) {
         auto rmbToggle = static_cast<CCMenuItemToggler*>(sender);
 
         bool isEnabled = !rmbToggle->isToggled();
